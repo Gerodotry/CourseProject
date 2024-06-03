@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мій сайт</title>
+  <!-- Підключаємо Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding-left: 250px;
+      background-color: rgb(42, 98, 154);
+    }
+    .left-bar .nav-link {
+      font-size: 1.5rem; /* Збільшуємо шрифт для пунктів лівого бару */
+      border-bottom: 1px solid #ccc; /* Додаємо нижню границю для пунктів */
+      margin-bottom: 10px; /* Додаємо відступ знизу для пунктів */
+    }
+
+    .left-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 250px;
+      background-color: #003285;
+      padding: 20px;
+      overflow-y: auto; /* Дозволимо прокручування, якщо контент перевищує висоту */
+      box-shadow: 8px 0 5px rgba(0, 0, 0, 0.1); /* Додаємо тінь */
+    }
+
+
+    .cart-items li {
+      list-style-type: none;
+      color: #F8F9D7; /* Встановлюємо колір шрифту для товарів у кошику */
+      border-bottom: 1px solid #ccc; /* Додаємо нижню границю для пунктів */
+      margin-bottom: 10px; /* Додаємо відступ знизу для пунктів */
+      font-size: 1.2rem; /* Збільшуємо шрифт для пунктів */
+    }
+
+    .main-bar {
+      padding: 10px;
+      margin-right: 100px;
+      margin-left: 60px; /* Враховуємо ширину правого бару та відступ */
+      position: relative; /* Встановлюємо відносне позиціонування */
+    }
+
+    .right-bar {
+      position: fixed; /* Фіксована позиція */
+      top: 205px; /* Додаємо відступ зверху */
+      right: 10px; /* Відступ з правого боку */
+      width: 300px;
+      background-color: rgb(255, 127, 62);
+      border-radius: 7px;
+      padding: 10px;
+      overflow-y: auto; /* Дозволимо прокручування, якщо контент перевищує висоту */
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Додаємо тінь */
+    }
+
+    .card {
+      width: 250px; /* Встановлюємо ширину картки */
+      margin-bottom: 20px;
+      margin-right: 10px; /* Додаємо відступ знизу для карток */
+    }
+
+    .placeholder-rectangle {
+      width: 80%;
+      height: 650px;
+      background-color: #ffda78;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: relative; /* Додано для роботи з draggable */
+    }
+    .placeholder-rectangle1 {
+         width: 75%;
+         height: 620px;
+         background-color: #ffffff;
+         display: flex;
+         justify-content: space-around;
+         align-items: center;
+         position: relative; /* Додано для роботи з draggable */
+       }
+    .placeholder-rectangle2 {
+          width: 620px;
+          height: 320px;
+          background-color: #ffffff;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          position: relative; /* Додано для роботи з draggable */
+        }
+
+    .placeholder-small-rectangle {
+      position: absolute;
+      width: 100px;
+      height: 50px;
+      background-color: #003285;
+      cursor: pointer;
+    }
+    #cart-items li {
+
+      color: #F8F9D7; /* Встановлюємо колір шрифту для товарів у кошику */
+    }
+  </style>
+</head>
+<body>
+<div class="left-bar">
+  <h2 style="color: #ffffff;">РОЗДІЛ</h2>
+  <ul class="nav flex-column" >
+    <li class="nav-item">
+      <a class="nav-link" href="#" onclick="showCategory('home')" style="color: #ffffff;">Main</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" onclick="showCategory('kitchen')" style="color: #ffffff;" >Кухня</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" onclick="showCategory('bathroom')" style="color: #ffffff;" >Ванна</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" onclick="showCategory('bedroom')" style="color: #ffffff;" >Спальня</a>
+    </li>
+  </ul>
+</div>
+<header class=" text-white py-3 " style="background-color: #2a629a;">
+  <div class="container">
+    <h1 class="text-center" style="color:#ffffff; font-size: 4rem;" >МЕБЛІ+</h1>
+  </div>
+</header>
+<div class="container mt-4 main-bar">
+  <h2 id="category-title" style="color: #ffffff;">Товари </h2>
+  <div id="category-content" class="d-flex flex-wrap">
+    <!-- Тут будуть відображатися товари або контент головної сторінки -->
+  </div>
+</div>
+
+<div class="right-bar" id="cartГоловна">
+  <h2 style="color: #F8F9D7;">Кошик</h2>
+  <ul id="cart-items" style=" list-style-type: none;padding: 0;">
+
+  </ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const products = {
+    kitchen: [
+      { title: "Fridge", img: "fridge.png" },
+      { title: "Oven", img: "oven.png" },
+      { title: "Sink", img: "tap (1).png" },
+      { title: "Extractor", img: "extractor-hood.png" }
+    ],
+    bathroom: [
+      { title: "Bathroom", img: "bathroom.png" },
+      { title: "Bathtub", img: "bathtub.png" },
+      { title: "Shower", img: "images.png" },
+      { title: "Toilet", img: "194483.png" }
+    ],
+    bedroom: [
+      { title: "Couch", img: "couch.png" },
+      { title: "Mirror", img: "mirror.png" },
+      { title: "Crib", img: "crib.png" },
+      { title: "Lamp", img: "4312514.png" }
+    ]
+  };
+
+  const cart = {};
+
+  function showCategory(category) {
+    const categoryTitle = document.getElementById('category-title');
+    const categoryContent = document.getElementById('category-content');
+    if (category === 'home') {
+      categoryTitle.textContent = 'Main';
+      categoryContent.innerHTML = `
+<div class="placeholder-rectangle">
+  <div class="placeholder-rectangle1" style="display: none;"></div>
+   <div class="placeholder-rectangle2" style="display: none;"></div>
+  <div style="position: absolute; bottom: -90px; left: 100px; display: flex; flex-direction: row; align-items: center;">
+    <button class="btn btn-primary" id="generateButton" style="width: 180px; height: 70px; background-color: rgb(255, 127, 62); margin-right: 20px;">Згенерувати</button>
+    <div style="display: flex; align-items: center;">
+      <label for="widthInput" style="color: #ffffff; margin-right: 10px;">Ширина:</label>
+      <input type="number" id="widthInput" class="form-control" style="width: 80px; margin-right: 20px;">
+      <label for="heightInput" style="color: #ffffff; margin-right: 10px;">Довжина:</label>
+      <input type="number" id="heightInput" class="form-control" style="width: 80px;">
+      <label for="additionalWidthInput" style="color: #ffffff; margin-right: 5px; margin-left: 15px;">Додаткова ширина:</label>
+      <input type="number" id="additionalWidthInput" class="form-control" style="width: 80px; margin-right: 20px;">
+      <label for="additionalHeightInput" style="color: #ffffff; margin-right: 10px;">Додаткова довжина:</label>
+      <input type="number" id="additionalHeightInput" class="form-control" style="width: 80px;">
+      <label for="maxValueInput" style="color: #ffffff; margin-right: 10px; margin-left: 15px;">Max value:</label>
+      <input type="number" id="maxValueInput" class="form-control" style="width: 150px;">
+    </div>
+  </div>
+</div>
+      `;
+      makeDraggable(); // Додаємо функцію для перетягування
+      document.getElementById('generateButton').addEventListener('click', function() {
+        generateRectangles();
+      });
+    } else {
+      categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+      const items = products[category];
+      categoryContent.innerHTML = items.map(item => `
+        <div class="card" onclick="addToCart('${item.title}')">
+          <img src="${item.img}" class="card-img-top" alt="${item.title}">
+          <div class="card-body">
+            <h5 class="card-title">${item.title}</h5>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function generateRectangles() {
+      document.getElementById('maxValueInput').value = 5643;
+
+      document.querySelector('.placeholder-rectangle1').style.display = 'flex';
+
+      document.querySelectorAll('.placeholder-small-rectangle').forEach(rectangle => rectangle.remove());
+
+      const container = document.querySelector('.placeholder-rectangle1');
+
+      const rectangles = [
+        { width: 55, height: 45, left: 10, top: 10 , link: 'https://epicentrk.ua/ua/shop/umyvalnik-cersanit-president-55.html' },
+        { width: 55, height: 45, left: 65, top: 10, link: 'https://epicentrk.ua/ua/shop/umyvalnik-cersanit-president-55.html' },
+        { width: 50, height: 50, left: 120, top: 10, link:'https://epicentrk.ua/ua/shop/kholodylnyk-saturn-st-cf2700.html'}
+      ];
+
+      rectangles.forEach((rect) => {
+
+        const rectangle = document.createElement('div');
+        rectangle.classList.add('placeholder-small-rectangle');
+        rectangle.style.width = rect.width + 'px';
+        rectangle.style.height = rect.height + 'px';
+        rectangle.style.backgroundColor = '#003285';
+        rectangle.style.cursor = 'pointer';
+        rectangle.style.position = 'absolute';
+        rectangle.style.left = rect.left + 'px';
+        rectangle.style.top = rect.top + 'px';
+        rectangle.setAttribute('data-link', rect.link);
+
+        container.appendChild(rectangle);
+      });
+
+      makeDraggable();
+    }
+
+
+
+  function addToCart(itemTitle) {
+    if (cart[itemTitle]) {
+      cart[itemTitle]++;
+    } else {
+      cart[itemTitle] = 1;
+    }
+    updateCart();
+  }
+
+  function updateCart() {
+    const cartItems = document.getElementById('cart-items');
+    cartItems.innerHTML = '';
+    for (const [title, quantity] of Object.entries(cart)) {
+      const newItem = document.createElement('li');
+      newItem.textContent = `${title} (x${quantity})`;
+      cartItems.appendChild(newItem);
+    }
+  }
+
+  function makeDraggable() {
+    var activeRectangle = null;
+    var offsetX = 0;
+    var offsetY = 0;
+
+    document.querySelectorAll('.placeholder-small-rectangle').forEach(function(rectangle) {
+      rectangle.addEventListener('mousedown', function(event) {
+        activeRectangle = rectangle;
+        offsetX = event.clientX - parseInt(activeRectangle.style.left, 10);
+        offsetY = event.clientY - parseInt(activeRectangle.style.top, 10);
+      });
+
+      // Додаємо подію click
+      rectangle.addEventListener('click', function(event) {
+        if (!activeRectangle) {
+          var link = rectangle.getAttribute('data-link');
+          var linkText = document.createElement('span');
+          linkText.textContent = link;
+          linkText.style.marginLeft = '10px';
+          linkText.style.color = '#ffffff';
+          linkText.id = 'rectangle-link'; // Додаємо id, щоб легко видалити
+
+          // Видаляємо старий текст посилання, якщо він існує
+          var oldLinkText = document.getElementById('rectangle-link');
+          if (oldLinkText) {
+            oldLinkText.remove();
+          }
+
+          var categoryTitle = document.getElementById('category-title');
+          categoryTitle.appendChild(linkText);
+        }
+      });
+    });
+
+    document.addEventListener('mousemove', function(event) {
+      if (activeRectangle) {
+        var x = event.clientX - offsetX;
+        var y = event.clientY - offsetY;
+
+        // Обмеження переміщення прямокутника в межах великого прямокутника
+        var containerRect = document.querySelector('.placeholder-rectangle').getBoundingClientRect();
+        var rectRect = activeRectangle.getBoundingClientRect();
+        if (x < containerRect.left-318) {
+          x = containerRect.left -318;
+        }
+        if (x + rectRect.width > containerRect.right -581) {
+          x = containerRect.right - 581 - rectRect.width;
+        }
+        if (y < containerRect.top - 197) {
+          y = containerRect.top - 197;
+        }
+        if (y + rectRect.height > containerRect.bottom - 229) {
+          y = containerRect.bottom -229 - rectRect.height;
+        }
+
+        activeRectangle.style.left = x + 'px';
+        activeRectangle.style.top = y + 'px';
+
+        // Перевірка, чи не перекривається прямокутник з іншими
+        var rectangles = document.querySelectorAll('.placeholder-small-rectangle');
+        for (var i = 0; i < rectangles.length; i++) {
+          if (rectangles[i] !== activeRectangle && isOverlapping(activeRectangle, rectangles[i])) {
+            // Зміщення прямокутника, щоб він не перекривався з іншим
+            var overlappingRect = rectangles[i];
+            var overlappingRectCoords = overlappingRect.getBoundingClientRect();
+            var activeRectCoords = activeRectangle.getBoundingClientRect();
+            var newX = activeRectCoords.left;
+            var newY = activeRectCoords.top;
+
+            // Перевірка чи верхній лівий кут прямокутників не знаходиться в межах іншого прямокутника
+            if (isPointInsideRectangle(newX, newY, overlappingRectCoords)) {
+              if (activeRectCoords.right <= overlappingRectCoords.left) {
+                newX = overlappingRectCoords.left - activeRectCoords.width;
+              } else {
+                newX = overlappingRectCoords.right;
+              }
+              if (activeRectCoords.bottom <= overlappingRectCoords.top) {
+                newY = overlappingRectCoords.top - activeRectCoords.height;
+              } else {
+                newY = overlappingRectCoords.bottom;
+              }
+            }
+
+            activeRectangle.style.left = newX + 'px';
+            activeRectangle.style.top = newY + 'px';
+          }
+        }
+      }
+    });
+
+    document.addEventListener('mouseup', function() {
+      activeRectangle = null;
+    });
+  }
+
+  function isOverlapping(rect1, rect2) {
+    var rect1Coords = rect1.getBoundingClientRect();
+    var rect2Coords = rect2.getBoundingClientRect();
+
+    return (
+            rect1Coords.left < rect2Coords.right &&
+            rect1Coords.right > rect2Coords.left &&
+            rect1Coords.top < rect2Coords.bottom &&
+            rect1Coords.bottom > rect2Coords.top
+    );
+  }
+
+  function isPointInsideRectangle(x, y, rect) {
+    return (
+            x >= rect.left &&
+            x <= rect.right &&
+            y >= rect.top &&
+            y <= rect.bottom
+    );
+  }
+
+  // Ініціалізація
+  document.addEventListener('DOMContentLoaded', function() {
+    showCategory('home');
+  });
+</script>
+
+</body>
+</html>
